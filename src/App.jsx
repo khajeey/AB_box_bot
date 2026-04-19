@@ -38,8 +38,8 @@ function App() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900">
-      <div className="bg-gray-700 border-none border-gray-300 rounded-2xl max-w-[600px] w-full shadow-lg">
+    <div className="flex justify-center items-center min-h-screen bg-gray-900 p-[40px]">
+      <div className="bg-gray-700 border-none border-gray-300 rounded-2xl max-w-[400px] w-full shadow-lg">
         <header className="bg-[#270075] flex items-center gap-6 text-2xl p-[25px] rounded-t-2xl">
           <img className="w-[100px] rounded-2xl" src="/frame-16.png" alt="logo" />
           <h1 className="text-white text-2xl font-bold flex items-center gap-3">
