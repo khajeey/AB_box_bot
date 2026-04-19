@@ -39,7 +39,7 @@ function App() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
-      <div className="bg-gray-700 border-2 border-gray-300 rounded-2xl max-w-[600px] w-full shadow-lg">
+      <div className="bg-gray-700 border-none border-gray-300 rounded-2xl max-w-[600px] w-full shadow-lg">
         <header className="bg-[#270075] flex items-center gap-6 text-2xl p-[25px] rounded-t-2xl">
           <img className="w-[100px] rounded-2xl" src="/frame-16.png" alt="logo" />
           <h1 className="text-white text-2xl font-bold flex items-center gap-3">
@@ -65,41 +65,44 @@ function App() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6 text-white">
-            <div className="text-center">
-              <p className="text-lg mb-2">Uzunlik</p>
-              <input
-                type="number"
-                value={length}
-                onChange={(e) => setLength(e.target.value)}
-                className="w-full border-2 border-amber-100 rounded-2xl py-3 text-center appearance-none"
-                placeholder="0"
-              />
-              <p>{unit}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-lg mb-2">Eni</p>
-              <input
-                type="number"
-                value={width}
-                onChange={(e) => setWidth(e.target.value)}
-                className="w-full border-2 border-amber-100 rounded-2xl py-3 text-center appearance-none"
-                placeholder="0"
-              />
-              <p>{unit}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-lg mb-2">Balandlik</p>
-              <input
-                type="number"
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-                className="w-full border-2 border-amber-100 rounded-2xl py-3 text-center appearance-none"
-                placeholder="0"
-              />
-              <p>{unit}</p>
-            </div>
+        <div className="flex gap-4 my-6 text-white">
+          <div className="text-center flex-1">
+            <p className="text-lg mb-2">Uzunlik</p>
+            <input
+              type="number"
+              value={length}
+              onChange={(e) => setLength(e.target.value)}
+              className="w-full border-2 border-amber-100 rounded-2xl py-3 text-center appearance-none"
+              placeholder="0"
+            />
+            <p>{unit}</p>
           </div>
+
+          <div className="text-center flex-1">
+            <p className="text-lg mb-2">Eni</p>
+            <input
+              type="number"
+              value={width}
+              onChange={(e) => setWidth(e.target.value)}
+              className="w-full border-2 border-amber-100 rounded-2xl py-3 text-center appearance-none"
+              placeholder="0"
+            />
+            <p>{unit}</p>
+          </div>
+
+          <div className="text-center flex-1">
+            <p className="text-lg mb-2">Balandlik</p>
+            <input
+              type="number"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+              className="w-full border-2 border-amber-100 rounded-2xl py-3 text-center appearance-none"
+              placeholder="0"
+            />
+            <p>{unit}</p>
+          </div>
+        </div>
+
 
           {error && <p className="text-red-400 mb-2 text-center">{error}</p>}
 
