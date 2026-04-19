@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import { CiCalculator1 } from "react-icons/ci";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { LuRuler } from "react-icons/lu";
+import { RiRestartLine } from "react-icons/ri";
+import { WiStars } from "react-icons/wi";
 
 function App() {
   const [unit, setUnit] = useState("m");
@@ -43,16 +48,16 @@ function App() {
   return (
     <div className="bg-gray-700 m-auto border-2 border-gray-300 rounded-2xl max-w-[600px]">
       <header className="bg-[#270075] flex items-center gap-6 text-2xl p-[25px] rounded-2xl">
-        <img className="w-[120px] rounded-2xl" src="imgs/Frame 16.png" alt="logo" />
-        <h1 className="text-white text-3xl">
-          Ab Box Kalkulyator <span><i className="fa-solid fa-chart-simple"></i></span>
+        <img className="w-[120px] rounded-2xl" src="/frame-16.png" alt="logo" />
+        <h1 className="text-white text-3xl flex items-center gap-3">
+          Ab Box Kalkulyator <span><WiStars/></span>
         </h1>
       </header>
 
       <main className="p-[25px]">
         <div>
-          <p className="my-4 text-white text-xl">
-            <span><i className="fa-solid fa-scale-unbalanced-flip"></i></span> O‘lchov birligi
+          <p className="my-4 text-white text-xl flex items-center gap-3">
+            <span><LuRuler/></span> O‘lchov birligi
           </p>
           <div className="flex gap-3">
             {["mm", "cm", "m"].map((u) => (
@@ -112,20 +117,20 @@ function App() {
         <div className="flex gap-5">
           <button
             onClick={calculate}
-            className="text-white bg-[#8637E6] py-[10px] px-[20px] flex flex-row gap-2 rounded-2xl hover:bg-[#8637e683] cursor-pointer ease-in-out"
+            className="text-white items-center bg-[#8637E6] py-[10px] px-[20px] flex flex-row gap-2 rounded-2xl hover:bg-[#8637e683] cursor-pointer ease-in-out"
           >
-            <span><i className="fa-solid fa-calculator"></i></span> Hisoblash <span><i className="fa-solid fa-arrow-right"></i></span>
+            <span><CiCalculator1 size={25} /> </span> Hisoblash <span><FaArrowRightLong /></span>
           </button>
           <button
             onClick={reset}
             className="bg-gray-400 py-3 px-4 rounded-2xl cursor-pointer ease-in-out hover:bg-gray-200"
           >
-            <i className="fa-solid fa-arrow-rotate-right"></i>
+            <RiRestartLine />
           </button>
         </div>
 
         {result && (
-          <div className="mt-4 p-4 bg-gray-100 rounded text-center whitespace-pre-line">
+          <div className="mt-4 p-4 bg-[#8637E6] text-white text-xl rounded-2xl text-center whitespace-pre-line">
             {result}
           </div>
         )}
