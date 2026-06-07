@@ -102,25 +102,48 @@ export default function App() {
           </div>
 
           {/* Dimension Inputs */}
-          <div className="space-y-2">
-            {[
-              { label: 'Uzunlik (L)', key: 'length', val: length, set: setLength },
-              { label: 'Eni (W)', key: 'width', val: width, set: setWidth },
-              { label: 'Balandlik (H)', key: 'height', val: height, set: setHeight },
-            ].map((dim) => (
-              <div key={dim.key} className=" items-center gap-3 bg-[#0b1a37] rounded-[10px] border border-white/20 px-4 py-3">
-                <label className="text-gray-400 text-[13px] w-[110px] shrink-0">{dim.label}</label>
-                <input
-                  type="number"
-                  value={dim.val}
-                  onChange={(e) => dim.set(e.target.value)}
-                  className="flex-1 bg-transparent text-white text-[22px] outline-none border-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  placeholder="0"
-                />
-                <span className="text-gray-500 text-[13px] w-[30px] text-right">{unit}</span>
-              </div>
-            ))}
-          </div>
+          <div className="space-y-3">
+  {[
+    { label: 'Uzunlik (L)', key: 'length', val: length, set: setLength },
+    { label: 'Eni (W)', key: 'width', val: width, set: setWidth },
+    { label: 'Balandlik (H)', key: 'height', val: height, set: setHeight },
+  ].map((dim) => (
+    <div
+      key={dim.key}
+      className="bg-[#0b1a37] rounded-[12px] border border-white/20 p-4"
+    >
+      <label className="block text-gray-400 text-sm mb-2">
+        {dim.label}
+      </label>
+
+      <div className="flex items-center">
+        <input
+          type="number"
+          value={dim.val}
+          onChange={(e) => dim.set(e.target.value)}
+          placeholder="0"
+          className="
+            flex-1
+            bg-transparent
+            text-white
+            text-3xl
+            font-medium
+            outline-none
+            border-none
+            min-w-0
+            [appearance:textfield]
+            [&::-webkit-outer-spin-button]:appearance-none
+            [&::-webkit-inner-spin-button]:appearance-none
+          "
+        />
+
+        <span className="text-gray-500 text-sm ml-3 shrink-0">
+          {unit}
+        </span>
+      </div>
+    </div>
+  ))}
+</div>
 
           {/* Hisoblash Button */}
           <button
