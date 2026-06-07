@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function App() {
   const [length, setLength] = useState('250');
@@ -6,10 +6,6 @@ export default function App() {
   const [height, setHeight] = useState('150');
   const [unit, setUnit] = useState('mm');
   const [results, setResults] = useState(null);
-
-  useEffect(() => {
-    handleCalculate();
-  }, []);
 
   const convertToMm = (val, u) => {
     const n = parseFloat(val) || 0;
@@ -112,14 +108,13 @@ export default function App() {
               { label: 'Eni (W)', key: 'width', val: width, set: setWidth },
               { label: 'Balandlik (H)', key: 'height', val: height, set: setHeight },
             ].map((dim) => (
-              <div key={dim.key} className="flex items-center gap-3 bg-[#0b1a37] rounded-[10px] border border-white/20 px-4 py-3">
+              <div key={dim.key} className=" items-center gap-3 bg-[#0b1a37] rounded-[10px] border border-white/20 px-4 py-3">
                 <label className="text-gray-400 text-[13px] w-[110px] shrink-0">{dim.label}</label>
                 <input
-                  type="text"
-                  inputMode="decimal"
+                  type="number"
                   value={dim.val}
                   onChange={(e) => dim.set(e.target.value)}
-                  className="flex-1 bg-transparent text-white text-[22px] text-right outline-none border-0"
+                  className="flex-1 bg-transparent text-white text-[22px] outline-none border-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder="0"
                 />
                 <span className="text-gray-500 text-[13px] w-[30px] text-right">{unit}</span>
