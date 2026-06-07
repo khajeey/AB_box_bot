@@ -1,135 +1,206 @@
-import React, { useState } from "react";
-import { CiCalculator1 } from "react-icons/ci";
-import { FaArrowRightLong } from "react-icons/fa6";
-import { LuRuler } from "react-icons/lu";
-import { RiRestartLine } from "react-icons/ri";
-import { WiStars } from "react-icons/wi";
+import { useState, useEffect } from 'react';
 
-function App() {
-  const [unit, setUnit] = useState("m");
-  const [length, setLength] = useState("");
-  const [width, setWidth] = useState("");
-  const [height, setHeight] = useState("");
-  const [result, setResult] = useState("");
-  const [error, setError] = useState("");
+export default function App() {
+  const [length, setLength] = useState('250');
+  const [width, setWidth] = useState('460');
+  const [height, setHeight] = useState('150');
+  const [unit, setUnit] = useState('mm');
+  const [results, setResults] = useState(null);
 
-  const calculate = () => {
-    if (!length || !width || !height) {
-      setError("Iltimos, barcha qiymatlarni kiriting!");
-      setResult("");
-      return;
-    }
-    setError("");
+  useEffect(() => {
+    handleCalculate();
+  }, []);
 
-    let l = parseFloat(length);
-    let w = parseFloat(width);
-    let h = parseFloat(height);
-
-    if (unit === "mm") { l /= 1000; w /= 1000; h /= 1000; }
-    else if (unit === "cm") { l /= 100; w /= 100; h /= 100; }
-
-    const volume = l * w * h;
-    const liters = volume * 1000;
-    setResult(`Hajm: ${volume.toFixed(3)} m³\nSig‘im: ${liters.toFixed(2)} litr`);
+  const convertToMm = (val, u) => {
+    const n = parseFloat(val) || 0;
+    if (u === 'cm') return n * 10;
+    if (u === 'm') return n * 1000;
+    return n;
   };
 
-  const reset = () => {
-    setLength(""); setWidth(""); setHeight(""); setResult(""); setError("");
+  const convertFromMm = (mm, u) => {
+    if (u === 'cm') return String(mm / 10);
+    if (u === 'm') return String(mm / 1000);
+    return String(mm);
+  };
+
+  // Format numbers with spaces as thousand separators, dot as decimal
+  const fmt = (n) => {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  };
+
+  const handleCalculate = () => {
+    const l = convertToMm(length, unit);
+    const w = convertToMm(width, unit);
+    const h = convertToMm(height, unit);
+
+    const volumeMm3 = l * w * h;
+    const volumeCm3 = volumeMm3 / 1000;
+    const volumeLiters = volumeCm3 / 1000;
+    const volumetricWeight = volumeCm3 / 5000;
+    // Truncate to 1 decimal (as shown in design: 3.45 → 3.4)
+    const volWeightTrunc = Math.floor(volumetricWeight * 10) / 10;
+    const tariffVolume = Math.ceil(volumeLiters);
+    const rounding = +(tariffVolume - volumeLiters).toFixed(2);
+    const fillPercent = (volumeLiters / tariffVolume) * 100;
+
+    const basePrice = 5250;
+    const unitPrice = 250;
+    const totalPrice = basePrice + (tariffVolume - 1) * unitPrice;
+
+    setResults({
+      volumeMm3: fmt(Math.round(volumeMm3)),
+      volumeCm3: fmt(Math.round(volumeCm3)),
+      volumeLiters: volumeLiters.toFixed(3),
+      volumetricWeight: volWeightTrunc.toFixed(1),
+      tariffVolume,
+      rounding: rounding > 0 ? '+' + rounding.toFixed(2) : '0.00',
+      fillPercent: fillPercent.toFixed(1),
+      totalPrice: fmt(totalPrice),
+      formula: `narx = ${fmt(basePrice)} + (${tariffVolume} - 1) × ${fmt(unitPrice)} = ${fmt(totalPrice)} so'm`,
+      dimensions: `o'lcham = ${Math.round(l)} × ${Math.round(w)} × ${Math.round(h)} mm`,
+    });
+  };
+
+  const handleUnitChange = (newUnit) => {
+    const lMm = convertToMm(length, unit);
+    const wMm = convertToMm(width, unit);
+    const hMm = convertToMm(height, unit);
+    setLength(convertFromMm(lMm, newUnit));
+    setWidth(convertFromMm(wMm, newUnit));
+    setHeight(convertFromMm(hMm, newUnit));
+    setUnit(newUnit);
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900 p-[40px]">
-      <div className="bg-gray-700 border-none border-gray-300 rounded-2xl max-w-[400px] w-full shadow-lg">
-        <header className="bg-[#270075] flex items-center gap-6 text-2xl p-[25px] rounded-t-2xl">
-          <img className="w-[100px] rounded-2xl" src="/frame-16.png" alt="logo" />
-          <h1 className="text-white text-2xl font-bold flex items-center gap-3">
-            Ab Box Kalkulyator <WiStars />
-          </h1>
-        </header>
+    <main className="bg-[#010c21] min-h-screen">
+      <div className="w-[400px] mx-auto py-[40px] px-0">
 
-        <main className="p-[25px]">
-          <p className="my-4 text-white text-xl flex items-center gap-3">
-            <LuRuler /> O‘lchov birligi
-          </p>
-          <div className="flex gap-3 justify-center mb-6">
-            {["mm", "cm", "m"].map((u) => (
+        {/* ---- Header ---- */}
+        <div className="bg-[#010c21] shadow-[inset_0_0_15px_rgba(155,155,155,0.1)] rounded-[10px] border border-white/30 flex items-center gap-4 px-[30px] py-[15px] mb-[10px]">
+          <img src="/logo.png" alt="logo" className="w-[65px] h-[65px] object-contain shrink-0" />
+          <div>
+            <h1 className="font-[550] text-[17px] text-white">AbBox Kalkulyator</h1>
+            <p className="text-[12px] font-[400] text-gray-500">Logistica va narx hisoblash</p>
+          </div>
+        </div>
+
+        {/* ---- Calculator Body ---- */}
+        <div className="bg-[#010c21] shadow-[inset_0_0_15px_rgba(155,155,155,0.1)] rounded-[10px] border border-white/30 px-[30px] py-[20px]">
+          {/* Unit Selector */}
+          <h2 className="font-[400] text-[15px] text-[#4ca5ff]">O'lchov birligi</h2>
+          <div className="flex border border-white/30 rounded-[10px] overflow-hidden my-[10px]">
+            {['mm', 'cm', 'm'].map((u) => (
               <button
                 key={u}
-                onClick={() => setUnit(u)}
-                className={`px-8 py-2 rounded-2xl text-white cursor-pointer transition ${
-                  unit === u ? "bg-[#8637E6]" : "bg-gray-500"
-                } hover:bg-[#8637e683]`}
+                onClick={() => handleUnitChange(u)}
+                className={`flex-1 py-[10px] text-center transition-all duration-200 ${
+                  unit === u
+                    ? 'bg-gradient-to-t from-[#11253e] via-[#184075] to-[#0751B2] text-white'
+                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                }`}
               >
                 {u.toUpperCase()}
               </button>
             ))}
           </div>
 
-        <div className="flex gap-4 my-6 text-white">
-          <div className="text-center flex-1">
-            <p className="text-lg mb-2">Uzunlik</p>
-            <input
-              type="number"
-              value={length}
-              onChange={(e) => setLength(e.target.value)}
-              className="w-full border-2 border-amber-100 rounded-2xl py-3 text-center appearance-none"
-              placeholder="0"
-            />
-            <p>{unit}</p>
+          {/* Dimension Inputs */}
+          <div className="space-y-2">
+            {[
+              { label: 'Uzunlik (L)', key: 'length', val: length, set: setLength },
+              { label: 'Eni (W)', key: 'width', val: width, set: setWidth },
+              { label: 'Balandlik (H)', key: 'height', val: height, set: setHeight },
+            ].map((dim) => (
+              <div key={dim.key} className="flex items-center gap-3 bg-[#0b1a37] rounded-[10px] border border-white/20 px-4 py-3">
+                <label className="text-gray-400 text-[13px] w-[110px] shrink-0">{dim.label}</label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={dim.val}
+                  onChange={(e) => dim.set(e.target.value)}
+                  className="flex-1 bg-transparent text-white text-[22px] text-right outline-none border-0"
+                  placeholder="0"
+                />
+                <span className="text-gray-500 text-[13px] w-[30px] text-right">{unit}</span>
+              </div>
+            ))}
           </div>
 
-          <div className="text-center flex-1">
-            <p className="text-lg mb-2">Eni</p>
-            <input
-              type="number"
-              value={width}
-              onChange={(e) => setWidth(e.target.value)}
-              className="w-full border-2 border-amber-100 rounded-2xl py-3 text-center appearance-none"
-              placeholder="0"
-            />
-            <p>{unit}</p>
+          {/* Hisoblash Button */}
+          <button
+            onClick={handleCalculate}
+            className="w-full bg-gradient-to-l from-[#11253e] via-[#184075] to-[#0751B2] text-white font-[500] rounded-md py-[14px] mt-[15px] hover:opacity-90 transition-opacity text-[16px]"
+          >
+            Hisoblash
+          </button>
+
+          {/* Price Display */}
+          <div className="bg-gradient-to-l from-[#11253e] via-[#184075] to-[#0751B2] w-full text-center my-[20px] rounded-md py-[15px]">
+            <p className="text-gray-400 text-[15px]">Logistica narxi</p>
+            <h2 className="text-white text-[35px] font-[550]">
+              {results ? results.totalPrice : '0'}{' '}
+              <span className="text-[18px] text-gray-400">so'm</span>
+            </h2>
           </div>
 
-          <div className="text-center flex-1">
-            <p className="text-lg mb-2">Balandlik</p>
-            <input
-              type="number"
-              value={height}
-              onChange={(e) => setHeight(e.target.value)}
-              className="w-full border-2 border-amber-100 rounded-2xl py-3 text-center appearance-none"
-              placeholder="0"
-            />
-            <p>{unit}</p>
-          </div>
-        </div>
+          {/* ---- Results ---- */}
+          {results && (
+            <>
+              {/* Volume Data */}
+              <div className="w-full shadow-[inset_0_0_15px_rgba(155,155,155,0.1)] rounded-[10px] border border-white/30 p-[15px]">
+                <h2 className="text-[#4CA5FF] text-[15px] mb-2">Hajm ma'lumotlari</h2>
+                <div className="grid grid-cols-2 gap-[8px]">
+                  <div className="rounded-[10px] border border-white/20 p-[8px]">
+                    <p className="text-gray-400 text-[12px]">Hajm (mm³)</p>
+                    <p className="text-white text-[18px]">{results.volumeMm3}</p>
+                  </div>
+                  <div className="rounded-[10px] border border-white/20 p-[8px]">
+                    <p className="text-gray-400 text-[12px]">Hajm (cm³)</p>
+                    <p className="text-white text-[18px]">{results.volumeCm3}</p>
+                  </div>
+                  <div className="rounded-[10px] border border-white/20 p-[8px]">
+                    <p className="text-gray-400 text-[12px]">Haqiqiy hajm</p>
+                    <p className="text-white text-[18px]">{results.volumeLiters} L</p>
+                  </div>
+                  <div className="rounded-[10px] border border-white/20 p-[8px]">
+                    <p className="text-gray-400 text-[12px]">Vol. og'irlik</p>
+                    <p className="text-white text-[18px]">{results.volumetricWeight} kg</p>
+                  </div>
+                </div>
+              </div>
 
+              {/* Tariff Card */}
+              <div className="w-full shadow-[inset_0_0_15px_rgba(155,155,155,0.1)] rounded-[10px] border border-white/30 p-[15px] mt-[15px]">
+                <p className="text-green-400 text-sm mb-3">Tarif</p>
+                <div className="flex justify-between items-center mb-2">
+                  <div>
+                    <p className="text-gray-400 text-xs">Tarif hajmi</p>
+                    <p className="text-white text-2xl">{results.tariffVolume} L</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-gray-400 text-xs">Yaxlitlash</p>
+                    <p className="text-green-400 text-sm font-medium">{results.rounding} L</p>
+                  </div>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-1.5 mb-2">
+                  <div
+                    className="bg-green-500 h-1.5 rounded-full"
+                    style={{ width: `${Math.min(results.fillPercent, 100)}%` }}
+                  ></div>
+                </div>
+                <p className="text-gray-400 text-xs">{results.fillPercent}% to'ldirilgan</p>
+              </div>
 
-          {error && <p className="text-red-400 mb-2 text-center">{error}</p>}
-
-          <div className="flex gap-4 justify-center">
-            <button
-              onClick={calculate}
-              className="bg-[#8637E6] text-white px-6 py-2 rounded-2xl flex items-center gap-2 hover:bg-[#8637e683]"
-            >
-              <CiCalculator1 size={25} /> Hisoblash <FaArrowRightLong />
-            </button>
-            <button
-              onClick={reset}
-              className="bg-gray-400 px-4 py-2 rounded-2xl hover:bg-gray-200"
-            >
-              <RiRestartLine />
-            </button>
-          </div>
-
-          {result && (
-            <div className="mt-6 p-4 bg-[#8637E6] text-white text-xl rounded-2xl text-center whitespace-pre-line">
-              {result}
-            </div>
+              {/* Formula */}
+              <div className="w-full shadow-[inset_0_0_15px_rgba(155,155,155,0.1)] rounded-[10px] border border-white/30 p-[15px] mt-[15px]">
+                <p className="text-gray-400 text-sm">{results.formula}</p>
+                <p className="text-gray-400 text-sm mt-1">{results.dimensions}</p>
+              </div>
+            </>
           )}
-        </main>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
-
-export default App;
